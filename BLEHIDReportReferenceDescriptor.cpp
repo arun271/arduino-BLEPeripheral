@@ -1,6 +1,6 @@
 #include "BLEHIDReportReferenceDescriptor.h"
 
-BLEHIDReportReferenceDescriptor::BLEHIDReportReferenceDescriptor(BLEHIDDescriptorType type) :
+BLEHIDReportReferenceDescriptor::BLEHIDReportReferenceDescriptor(unsigned char type) :
   BLEDescriptor("2908", this->_value, sizeof(_value))
 {
   this->_value[0] = 0x00;

@@ -28,10 +28,10 @@
 nRF51822::nRF51822() :
   BLEDevice(),
 
-  _connectionHandle(BLE_CONN_HANDLE_INVALID),
-
   _advDataLen(0),
   _broadcastCharacteristic(NULL),
+
+  _connectionHandle(BLE_CONN_HANDLE_INVALID),
 
   _numLocalCharacteristics(0),
   _localCharacteristicInfo(NULL),
@@ -93,7 +93,7 @@ void nRF51822::begin(unsigned char advertisementDataType,
   Serial.println();
 #endif
 
-  ble_gap_conn_params_t gap_conn_params = {0};
+  ble_gap_conn_params_t gap_conn_params;
 
   gap_conn_params.min_conn_interval = 40;  // in 1.25ms units
   gap_conn_params.max_conn_interval = 80;  // in 1.25ms unit
@@ -125,7 +125,7 @@ void nRF51822::begin(unsigned char advertisementDataType,
     this->_advDataLen += advertisementDataLength;
   }
 
-  if (scanDataType && scanDataLength && srData) {
+  if (scanDataType && scanDataLength && scanData) {
     srData[0] = scanDataLength + 1;
     srData[1] = scanDataType;
     memcpy(&srData[2], scanData, scanDataLength);
@@ -623,6 +623,7 @@ void nRF51822::poll() {
                 this->_eventListener->BLEDeviceCharacteristicSubscribedChanged(*this, *localCharacteristicInfo->characteristic, subscribed);
               }
             }
+            break;
           }
         }
         break;
@@ -883,14 +884,14 @@ bool nRF51822::broadcastCharacteristic(BLECharacteristic& characteristic) {
           this->_broadcastCharacteristic = &characteristic;
         }
       }
+      break;
     }
-    break;
   }
 
   return success;
 }
 
-bool nRF51822::canNotifyCharacteristic(BLECharacteristic& characteristic) {
+bool nRF51822::canNotifyCharacteristic(BLECharacteristic& /*characteristic*/) {
   uint8_t count = 0;
 
   sd_ble_tx_buffer_count_get(&count);
@@ -898,7 +899,7 @@ bool nRF51822::canNotifyCharacteristic(BLECharacteristic& characteristic) {
   return (count > 0);
 }
 
-bool nRF51822::canIndicateCharacteristic(BLECharacteristic& characteristic) {
+bool nRF51822::canIndicateCharacteristic(BLECharacteristic& /*characteristic*/) {
   uint8_t count = 0;
 
   sd_ble_tx_buffer_count_get(&count);
@@ -1101,7 +1102,7 @@ void nRF51822::startAdvertising() {
   Serial.println(F("Start advertisement"));
 #endif
 
-  ble_gap_adv_params_t advertisingParameters = {0};
+  ble_gap_adv_params_t advertisingParameters;
 
   advertisingParameters.type        = this->_connectable ? BLE_GAP_ADV_TYPE_ADV_IND : BLE_GAP_ADV_TYPE_ADV_NONCONN_IND;
   advertisingParameters.p_peer_addr = NULL;

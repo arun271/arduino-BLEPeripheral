@@ -17,11 +17,11 @@ BLEPeripheral::BLEPeripheral(unsigned char req, unsigned char rdy, unsigned char
   _nRF8001(req, rdy, rst),
 #endif
 
-  _localName(NULL),
   _advertisedServiceUuid(NULL),
   _serviceSolicitationUuid(NULL),
   _manufacturerData(NULL),
   _manufacturerDataLength(0),
+  _localName(NULL),
 
   _localAttributes(NULL),
   _numLocalAttributes(0),
@@ -284,7 +284,7 @@ bool BLEPeripheral::unsubcribeRemoteCharacteristic(BLERemoteCharacteristic& char
   return this->_device->unsubcribeRemoteCharacteristic(characteristic);
 }
 
-void BLEPeripheral::BLEDeviceConnected(BLEDevice& device, const unsigned char* address) {
+void BLEPeripheral::BLEDeviceConnected(BLEDevice& /*device*/, const unsigned char* address) {
   this->_central.setAddress(address);
 
 #ifdef BLE_PERIPHERAL_DEBUG
@@ -298,7 +298,7 @@ void BLEPeripheral::BLEDeviceConnected(BLEDevice& device, const unsigned char* a
   }
 }
 
-void BLEPeripheral::BLEDeviceDisconnected(BLEDevice& device) {
+void BLEPeripheral::BLEDeviceDisconnected(BLEDevice& /*device*/) {
 #ifdef BLE_PERIPHERAL_DEBUG
   Serial.print(F("Peripheral disconnected from central: "));
   Serial.println(this->_central.address());
@@ -312,7 +312,7 @@ void BLEPeripheral::BLEDeviceDisconnected(BLEDevice& device) {
   this->_central.clearAddress();
 }
 
-void BLEPeripheral::BLEDeviceBonded(BLEDevice& device) {
+void BLEPeripheral::BLEDeviceBonded(BLEDevice& /*device*/) {
 #ifdef BLE_PERIPHERAL_DEBUG
   Serial.print(F("Peripheral bonded: "));
   Serial.println(this->_central.address());
@@ -324,7 +324,7 @@ void BLEPeripheral::BLEDeviceBonded(BLEDevice& device) {
   }
 }
 
-void BLEPeripheral::BLEDeviceRemoteServicesDiscovered(BLEDevice& device) {
+void BLEPeripheral::BLEDeviceRemoteServicesDiscovered(BLEDevice& /*device*/) {
 #ifdef BLE_PERIPHERAL_DEBUG
   Serial.print(F("Peripheral discovered central remote services: "));
   Serial.println(this->_central.address());
@@ -336,19 +336,19 @@ void BLEPeripheral::BLEDeviceRemoteServicesDiscovered(BLEDevice& device) {
   }
 }
 
-void BLEPeripheral::BLEDeviceCharacteristicValueChanged(BLEDevice& device, BLECharacteristic& characteristic, const unsigned char* value, unsigned char valueLength) {
+void BLEPeripheral::BLEDeviceCharacteristicValueChanged(BLEDevice& /*device*/, BLECharacteristic& characteristic, const unsigned char* value, unsigned char valueLength) {
   characteristic.setValue(this->_central, value, valueLength);
 }
 
-void BLEPeripheral::BLEDeviceCharacteristicSubscribedChanged(BLEDevice& device, BLECharacteristic& characteristic, bool subscribed) {
+void BLEPeripheral::BLEDeviceCharacteristicSubscribedChanged(BLEDevice& /*device*/, BLECharacteristic& characteristic, bool subscribed) {
   characteristic.setSubscribed(this->_central, subscribed);
 }
 
-void BLEPeripheral::BLEDeviceRemoteCharacteristicValueChanged(BLEDevice& device, BLERemoteCharacteristic& remoteCharacteristic, const unsigned char* value, unsigned char valueLength) {
+void BLEPeripheral::BLEDeviceRemoteCharacteristicValueChanged(BLEDevice& /*device*/, BLERemoteCharacteristic& remoteCharacteristic, const unsigned char* value, unsigned char valueLength) {
   remoteCharacteristic.setValue(this->_central, value, valueLength);
 }
 
-void BLEPeripheral::BLEDeviceAddressReceived(BLEDevice& device, const unsigned char* address) {
+void BLEPeripheral::BLEDeviceAddressReceived(BLEDevice& /*device*/, const unsigned char* address) {
 #ifdef BLE_PERIPHERAL_DEBUG
   char addressStr[18];
 
@@ -356,13 +356,15 @@ void BLEPeripheral::BLEDeviceAddressReceived(BLEDevice& device, const unsigned c
 
   Serial.print(F("Peripheral address: "));
   Serial.println(addressStr);
+#else
+  address = address;
 #endif
 }
 
-void BLEPeripheral::BLEDeviceTemperatureReceived(BLEDevice& device, float temperature) {
+void BLEPeripheral::BLEDeviceTemperatureReceived(BLEDevice& /*device*/, float /*temperature*/) {
 }
 
-void BLEPeripheral::BLEDeviceBatteryLevelReceived(BLEDevice& device, float batteryLevel) {
+void BLEPeripheral::BLEDeviceBatteryLevelReceived(BLEDevice& /*device*/, float /*batteryLevel*/) {
 }
 
 void BLEPeripheral::initLocalAttributes() {

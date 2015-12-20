@@ -11,7 +11,7 @@ enum BLEHIDDescriptorType {
 class BLEHIDReportReferenceDescriptor : public BLEDescriptor
 {
   public:
-    BLEHIDReportReferenceDescriptor(BLEHIDDescriptorType type);
+    BLEHIDReportReferenceDescriptor(unsigned char type);
 
     virtual ~BLEHIDReportReferenceDescriptor();
 

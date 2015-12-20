@@ -1,5 +1,6 @@
 #ifdef __AVR__
   #include <avr/eeprom.h>
+#elif defined(NRF51) || defined(__RFduino__)
 #else
   #warning "BLEBondStore persistent storage not supported on this platform"
 #endif
@@ -65,6 +66,8 @@ void BLEBondStore::putData(const unsigned char* data, unsigned int offset, unsig
     eeprom_write_byte((unsigned char *)this->_offset + offset + i + 1, data[i]);
   }
 #elif defined(NRF51) || defined(__RFduino__) // ignores offset
+  offset = offset;
+
   this->clearData();
 
   // turn on flash write enable
@@ -100,10 +103,12 @@ void BLEBondStore::getData(unsigned char* data, unsigned int offset, unsigned in
     data[i] = eeprom_read_byte((unsigned char *)this->_offset + offset + i + 1);
   }
 #elif defined(NRF51) || defined(__RFduino__) // ignores offset
+  offset = offset;
+
   uint32_t *in = this->_flashPageStartAddress;
   uint32_t *out  = (uint32_t*)data;
 
-  for(int i = 0; i < length; i += 4) { // assumes length is multiple of 4
+  for(unsigned int i = 0; i < length; i += 4) { // assumes length is multiple of 4
     *out = *in;
 
     out++;

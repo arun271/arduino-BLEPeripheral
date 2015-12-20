@@ -32,8 +32,8 @@ class BLEHIDPeripheral : public BLEPeripheral
 
     BLEService                          _hidService;
     BLEHIDReportMapCharacteristic       _hidReportMapCharacteristic;
-    BLEProgmemConstantCharacteristic    _hidInformationCharacteristic;
     BLEUnsignedCharCharacteristic       _hidControlPointCharacteristic;
+    BLEProgmemConstantCharacteristic    _hidInformationCharacteristic;
 
     unsigned char                       _reportIdOffset;
 
